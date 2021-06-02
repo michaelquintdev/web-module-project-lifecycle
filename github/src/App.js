@@ -6,10 +6,11 @@ class App extends React.Component {
   state = {
     username: '',
     login: '',
-    name: '',
     followers: '',
+    repos: '',
     picture: '',
     error: '',
+    url: '',
   }
 
   handleChange = (e) => {
@@ -26,9 +27,10 @@ class App extends React.Component {
       console.log(res);
       this.setState({
         login: res.data.login,
-        name: res.data.name,
         followers: res.data.followers,
         picture: res.data.avatar_url,
+        repos: res.data.public_repos,
+        url: res.data.html_url,
       })
     })
     .catch(err => {
@@ -37,20 +39,30 @@ class App extends React.Component {
       })
     })
   }
+  
+function headline(){
+    if(this.state.username === ''){
+      return null
+    }else{
+      return this.state.username + ':' + this.state.url
+    }
+  }
 
   render(){
     return (
       <div className="App">
         <h1>GitHub Search</h1>
         <form onSubmit = {this.handleSubmit}>
-          <input value = {this.state.username} onChange = {this.handleChange}/>
+          <input value = {this.state.username} placeholder = 'Type in a username' onChange = {this.handleChange}/>
           <button>Search Github</button>
         </form>
         <div>
-          <h2>{this.name}</h2>
-          <h3>{this.login}</h3>
-          <h4>Followers: {this.followers}</h4>
-          <img src = {this.picture}/>
+          <h2>{this.state.name}</h2>
+          <h3>
+            {headline()}
+          </h3>
+          <h4>Followers: {this.state.followers}</h4>
+          <img src = {this.state.picture}/>
         </div>
       </div>
     );
