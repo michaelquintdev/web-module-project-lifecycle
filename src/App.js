@@ -6,20 +6,23 @@ import BaseUsers from './components/BaseUsers';
 class App extends React.Component{
   state = {
     users: [],
+    followersArray: [],
     input: '',
   }
 
+  // Recieving my and followers data.
   componentDidMount() {
-    axios.get('https://api.github.com/users/michaelquintdev')
-    .then((res) => {
-      this.setState({
-        ...this.state,
-        users: [...this.state.users, res.data]
-      })
-    })
-    .catch((error) =>{
-      console.log(error)
-    })
+    axios.all([
+        axios.get('https://api.github.com/users/michaelquintdev'),
+        axios.get('https://api.github.com/users/michaelquintdev/followers'),
+    ])
+    .then(axios.spread((myRes, followersRes) => {
+        this.setState({
+            users: [...this.state.users, myRes.data],
+            followersArray: followersRes.data,
+        })
+        console.log('Mine', this.state.users, 'followers', this.state.followersArray)
+    }))
   }
 
   // Event Handlers
@@ -52,7 +55,7 @@ class App extends React.Component{
           <input onChange = {this.changeHandler} type = 'text' placeholder = 'Type in a username here'/>
           <button>Add User</button>
         </form>
-        <BaseUsers users = {this.props.users}/>
+        <BaseUsers />
       </div>
     );
   }
