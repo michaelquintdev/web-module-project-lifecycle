@@ -41,17 +41,10 @@ class App extends React.Component{
   }
   submit = (event) => {
     event.preventDefault();
-    axios.get(`https://api.github.com/users/${this.state.input}`)
-    .then(res => {
       this.setState({
         ...this.state,
-        users: [...this.state.users, res.data]
+        users: [...this.state.users, this.state.input]
       })
-      console.log(this.state.users)
-    })
-    .catch(error => {
-      console.log(error)
-    })
   }
 
   render(){
@@ -62,7 +55,9 @@ class App extends React.Component{
           <input onChange = {this.changeHandler} type = 'text' placeholder = 'Type in a username here'/>
           <button>Add User</button>
         </form>
-        <ProcessUsers users = {this.state.users}/>
+        {this.state.users.map((user, idx) => {
+            return <ProcessUsers user = {user} key = {idx}/>
+          })}
       </div>
     );
   }
