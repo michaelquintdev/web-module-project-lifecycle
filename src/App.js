@@ -55,9 +55,11 @@ class App extends React.Component{
           <input onChange = {this.changeHandler} type = 'text' placeholder = 'Type in a username here'/>
           <button>Add User</button>
         </form>
-        {this.state.users.map((user, idx) => {
-            return <ProcessUsers user = {user} key = {idx}/>
-          })}
+        <div className = 'card-container'>
+          {this.state.users.map((user, idx) => {
+              return <ProcessUsers user = {user} key = {idx}/>
+            })}
+        </div>
       </div>
     );
   }
