@@ -1,12 +1,11 @@
 import './App.css';
 import React from 'react';
 import axios from 'axios';
-import BaseUsers from './components/BaseUsers';
+import ProcessUsers from './components/ProcessUsers';
 
 class App extends React.Component{
   state = {
     users: [],
-    followersArray: [],
     input: '',
   }
 
@@ -18,20 +17,28 @@ class App extends React.Component{
     ])
     .then(axios.spread((myRes, followersRes) => {
         this.setState({
-            users: [...this.state.users, myRes.data],
-            followersArray: followersRes.data,
+            users: [myRes.data.login, 
+              ...followersRes.data.map((follower) => {
+              return follower.login
+            })],
+            
         })
-        console.log('Mine', this.state.users, 'followers', this.state.followersArray)
+        console.log('Mine', this.state.users)
     }))
+    .catch(error => {
+      console.log(error);
+    })
   }
 
-  // Event Handlers
+  // -----------------------------
+  // Event Handlers Below
+  // ----------------------------
+
   changeHandler = (event) => {
     this.setState({
       input: event.target.value
     })
   }
-
   submit = (event) => {
     event.preventDefault();
     axios.get(`https://api.github.com/users/${this.state.input}`)
@@ -55,7 +62,7 @@ class App extends React.Component{
           <input onChange = {this.changeHandler} type = 'text' placeholder = 'Type in a username here'/>
           <button>Add User</button>
         </form>
-        <BaseUsers />
+        <ProcessUsers users = {this.state.users}/>
       </div>
     );
   }
